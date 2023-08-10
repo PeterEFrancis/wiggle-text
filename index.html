@@ -66,6 +66,14 @@
 					  <span class="input-group-text">Linespace</span>
 					  <input id="linespace-input" type="number" class="form-control" placeholder="50" value="50">
 					</div>
+					<div class="input-group my-3">
+					  <span class="input-group-text">Page Width</span>
+					  <input id="width-input" type="number" class="form-control" placeholder="1000" value="1000">
+					</div>
+					<div class="input-group my-3">
+					  <span class="input-group-text">Margin</span>
+					  <input id="margin-input" type="number" class="form-control" placeholder="30" value="30">
+					</div>
 					<!-- <div class="input-group my-3">
 					  <span class="input-group-text">Justification</span>
 					  <input id="justification-input" type="text" class="form-control" placeholder="left" value="left">
@@ -107,9 +115,7 @@
 
 		let canvas = document.getElementById('canvas');
 
-		var thickness, pert, spacing, linespace, size, justification;
-
-		var margin = 30;
+		var thickness, pert, spacing, linespace, size, justification, page_width, margin;
 
 		var dots = false;
 
@@ -121,8 +127,12 @@
 			spacing = Number(document.getElementById('spacing-input').value) || 10;
 			linespace = Number(document.getElementById('linespace-input').value) || 50;
 			size = Number(document.getElementById('size-input').value) || 65;
+			margin = Number(document.getElementById('margin-input').value) || 30;
 			justification = document.querySelector('input[name="just"]:checked').value || "left";
+			page_width = Number(document.getElementById('width-input').value) || 1000;
 
+
+			canvas.width = page_width;
 
 
 			let text = document.getElementById('textbox').value;
