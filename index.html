@@ -82,6 +82,8 @@
 
 		var thickness, pert, spacing, linespace, size = 70;
 
+		var margin = 30;
+
 		var dots = false;
 
 
@@ -99,14 +101,14 @@
 			let print_lines = [];
 			for (let par of text.split("\n")) {
 				let line = [];
-				let cursor = spacing;
+				let cursor = margin;
 				for (let word of par.split(" ")) {
 					let word_width = get_word_width(word, size, spacing);
-					if (cursor + word_width + size/2 < canvas.width || line.length == 0) {
+					if (cursor + word_width + margin < canvas.width || line.length == 0) {
 						line.push(word);
 						cursor += word_width + size/2 + spacing;
 					} else {
-						cursor = spacing + word_width + size/2;
+						cursor = margin + word_width + size/2;
 						print_lines.push(JSON.parse(JSON.stringify(line)));
 						line = [word];
 					}
@@ -114,7 +116,7 @@
 				print_lines.push(JSON.parse(JSON.stringify(line)));
 			}
 
-			canvas.height = Math.max(print_lines.length, 1) * (size + linespace);
+			canvas.height = Math.max(print_lines.length, 1) * (size + linespace) + margin * 2;
 			ctx = canvas.getContext('2d');
 			ctx.lineWidth = thickness;
 
@@ -122,9 +124,9 @@
 			ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 
-			let v = 10;
+			let v = margin;
 			for (line of print_lines) {
-				draw_textline(ctx, line.join(" "), [10, v], size, spacing, dots, pert);
+				draw_textline(ctx, line.join(" "), [margin, v], size, spacing, dots, pert);
 				v += linespace + size;
 			}
 		}
