@@ -1,0 +1,28 @@
+
+
+
+		// function bezier_old(info) {
+		// 	let a = info[0];
+		// 	let b = info[1];
+		// 	let c = info[2];
+		// 	let dist = Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+		// 	ctx.moveTo(a.x, a.y);
+		// 	ctx.beginPath();
+		// 	let offset = {x: 0, y: 0};
+		// 	for (let t = 0; t < 1; t = t + dist / 10000) {
+		// 		let x = c.x + ((1 - t) ** 2) * (a.x - c.x) + (t ** 2) * (b.x - c.x);
+		// 		let y = c.y + ((1 - t) ** 2) * (a.y - c.y) + (t ** 2) * (b.y - c.y);
+				
+		// 		ctx.lineTo(x + offset.x, y + offset.y);
+		// 		offset.x = (offset.x + rand_sign() * pert);
+		// 		offset.y = (offset.y + rand_sign() * pert);
+		// 	}
+		// 	ctx.lineTo(b.x, b.y);
+		// 	ctx.stroke();
+		// }
+
+		// function line(info) {
+		// 	let a = info[0];
+		// 	let b = info[1];
+		// 	bezier([a, b, {x:(a.x + b.x) / 2, y:(a.y + b.y) / 2}], pert);
+		// }
