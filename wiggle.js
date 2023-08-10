@@ -138,7 +138,7 @@ function circle_points(pos, r) {
 
 
 
-const LETTERS = " qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890!@#$%^&*()-_=+{}|[]\\;':\",./<>?";
+const LETTERS = " qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890!@#$%^&*()-_=+{}|[]\\;':\",./<>?`";
 
 
 var letter_dict_cache = {};
@@ -574,7 +574,9 @@ function letter_dict(letter, h) {
 			"~": [
 				[[0, h*0.6], [w/4, h/3], [w/2, h/2], [w*3/4, h*2/3], [w, h*0.4]]
 			],
-
+			"`": [
+				[[0, 0], [w/5, h/5]]
+			],
 			"box": [
 				[[0, 0], [w, h]],
 				[[0, h], [w, 0]],
