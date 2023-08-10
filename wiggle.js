@@ -705,7 +705,7 @@ function draw_letter(ctx, letter, pos, s, dots, pert) {
 }
 
 
-function draw_textline(ctx, text, pos, s, spacing, dots, pert) {
+function draw_textline(ctx, text, pos, s, spacing, dots, pert, just, margin) {
 	// ctx.strokeStyle = 'rgba(0, 0, 255, 0.2)';
 	// ctx.beginPath();
 	// ctx.moveTo(pos[0], pos[1]);
@@ -718,6 +718,13 @@ function draw_textline(ctx, text, pos, s, spacing, dots, pert) {
 
 	ctx.strokeStyle = "black";
 	let cursor = 0;
+	if (just == "center") {
+		cursor = (canvas.width - get_word_width(text, s, spacing)) / 2;
+	} else if (just == "left") {
+		cursor = margin;
+	} else if (just == "right") {
+		cursor = canvas.width - get_word_width(text, s, spacing) - margin;
+	}
 	for (let i = 0; i < text.length; i++) {
 		let let_pos = [pos[0] + cursor, pos[1]]
 		let width = draw_letter(ctx, text[i], let_pos, s, dots, pert);
