@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Wiggle B&eacute;zier</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+  		<link rel="icon" type="image/x-icon" href="logo.gif">
+		
+	    <link href="res/bootstrap.css" rel="stylesheet">
+	    <script src="res/bootstrap.js"></script>
+	    <link rel="stylesheet" href="res/bootstrap-icons.css">
+	    <script src="res/jquery.js"></script>
+
+
+
+		<style>
+			canvas {
+				max-width: 100%;
+				border: 1px solid black;
+				background-color: white;
+			}
+			textarea {
+				width: 100%;
+				resize: none !important;
+			}
+		</style>
+		<script src="wiggle.js"></script>		
+
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12 text-center py-3">
+					<h1>Wiggle B&eacute;zier</h1>
+					<canvas id="canvas" width="500" height="500" style="position: inherit">
+						Your Browser doesn't support canvas... sowwyyy..
+					</canvas>
+					<br>
+					<textarea id="textbox" rows="10" disabled></textarea>
+
+				</div>
+			</div>
+		</div>
+
+		
+		
+	</body>
+	<script>
+
+		let canvas = document.getElementById('canvas');
+		let ctx = canvas.getContext('2d');
+		
+		var cmd = [];
+		var holding =  false;
+
+	    function event_int(e) {
+	    	let rect = canvas.getBoundingClientRect();
+	    	return [
+	    		(e.clientX - rect.left) * (canvas.width / canvas.clientWidth),
+		    	(e.clientY - rect.top) * (canvas.height / canvas.clientHeight)
+		    ];
+		}
+
+
+
+		canvas.addEventListener('mousedown', function(e) {
+			e.preventDefault();
+			holding = true;
+			cmd.push(event_int(e));
+			update();
+		});
+
+
+		canvas.addEventListener('mousemove', function(e) {
+			e.preventDefault();
+			if (holding) {
+				cmd.pop();
+				cmd.push(event_int(e));
+				update();
+			}
+		});
+
+
+		canvas.addEventListener('mouseup', function(e) {
+			e.preventDefault();
+			holding = false;
+			update();
+		});
+
+
+		canvas.addEventListener('mouseout', function(e) {
+			e.preventDefault();
+			if (holding) {
+				cmd.pop();
+				update();
+				holding = false;
+			}
+		});
+
+
+		function update() {
+
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+			ctx.fillStyle = "black";
+			ctx.strokeStyle = "black";
+
+			plot_point_path(ctx, get_points(bezier(cmd), 10), [0, 0], 0.3);
+			
+			for (let point of cmd) {
+				ctx.beginPath();
+				ctx.arc(point[0], point[1], 2, 0, 2 * Math.PI);
+				ctx.fill();
+			}
+
+			document.getElementById('textbox').value = JSON.stringify(cmd);
+
+		}
+
+
+
+	</script>
+
+</html>

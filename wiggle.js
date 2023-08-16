@@ -1,3 +1,7 @@
+const NORMAL_LETTER_RATIO = 2/3;
+
+
+
 function rand_sign() {
 	return Math.random() > 0.5 ? 1 : -1;
 }
@@ -92,13 +96,26 @@ function bezier(points) {
 	}
 }
 
+let path_dict_cache = {};
+path_dict_cache.contains = function(path) {
+	return path(1 / Math.PI) in path_dict_cache;
+}
+path_dict_cache.add = function(path, len) {
+	this[path(1 / Math.PI)] = len;
+}
+path_dict_cache.get = function(path) {
+	return this[path(1 / Math.PI)];
+}
 function approx_length(path) {
-	let ret = 0;
-	let T = 10000;
-	for (let i = 1; i < T; i++) {
-		ret += dist(path((i - 1) / T), path(i / T));
+	if (!path_dict_cache.contains(path)) {
+		let ret = 0;
+		let T = 10000;
+		for (let i = 1; i < T; i++) {
+			ret += dist(path((i - 1) / T), path(i / T));
+		}
+		path_dict_cache.add(path, ret);
 	}
-	return ret;
+	return path_dict_cache.get(path);
 }
 
 function get_points(path) {
@@ -141,12 +158,12 @@ function circle_points(pos, r) {
 const LETTERS = " qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890!@#$%^&*()-_=+{}|[]\\;':\",./<>?`";
 
 
-var letter_dict_cache = {};
-function letter_dict(letter, h) {
-	let str = JSON.stringify([letter, h]);
-	if (!(str in letter_dict_cache)) {
-	
-		let w = h * 2/3;
+// var letter_dict_cache = {};
+function letter_dict(letter) {
+	// let str = JSON.stringify([letter, h]);
+	// if (!(str in letter_dict_cache)) {
+		let h = 360;
+		let w = h * NORMAL_LETTER_RATIO;
 		let w1 = h * 0.9;
 		let dict = {
 			' ': [],
@@ -332,12 +349,12 @@ function letter_dict(letter, h) {
 				[[0, h], [0, h*.5], [w*2/9, h/2], [w*4/9, h/2], [w*2/3, h/2], [w*2/3, h*.7], [w*2/3, h]]
 			],
 			"i": [
-				...circle_points([w/20, h*0.38], w/20),
+				...circle_points([w/15, h*0.38], w/15),
 				[[w/20, h/1.8], [w/20, h]]
 			],
 			"j": [
-				...circle_points([w*2/3, h*0.4], w/20),
-				[[w*2/3, h/2], [w*2/3, h*5/4]],
+				...circle_points([w*2/3, h*0.38], w/15),
+				[[w*2/3, h/1.8], [w*2/3, h*5/4]],
 				[[w*2/3, h*5/4], [w*2/3, h*1.6], [w*0.2, h*3/2], [w*0.2, h*1.4]]
 			].map(x => x.map(y => [y[0] - w*0.2, y[1]])),
 			"k": [
@@ -453,7 +470,7 @@ function letter_dict(letter, h) {
 				[[w*7.3/9, h*1/9], [w*1.7/9, h*8/9]]
 			],
 			"!": [
-				...circle_points([w/20, h - w/20], w/20),
+				...circle_points([w/15, h - w/15], w/15),
 				[[w/20, 0], [w/20, h*0.8]]
 			],
 			"@": [
@@ -498,7 +515,7 @@ function letter_dict(letter, h) {
 				[[0, 0], [w/2, h/2], [0, h]]
 			],
 			"-": [
-				[[0, h/2], [w, h/2]]
+				[[0, h/2], [w*2/3, h/2]]
 			],
 			"_": [
 				[[0, h], [w, h]]
@@ -508,8 +525,8 @@ function letter_dict(letter, h) {
 				[[0, h/2], [w*2/3, h/2]],
 			],
 			"=": [
-				[[0, h*2/5], [w/2, h*2/5]],
-				[[0, h*3/5], [w/2, h*3/5]],
+				[[0, h*2/5], [w*2/3, h*2/5]],
+				[[0, h*3/5], [w*2/3, h*3/5]],
 			],
 			"[": [
 				[[0, 0], [w/4, 0]],
@@ -536,11 +553,11 @@ function letter_dict(letter, h) {
 				[[0, 0], [w/3, h]]
 			],
 			"?": [
-				...circle_points([w/2, h-w/20], w/20),
+				...circle_points([w/2, h - w/15], w/15),
 				[[0, h/3], [0, 0], [w/2, -h/6], [w, 0], [w, h/3], [w, h/2], [w/2, h/3], [w/2, h*0.8]]
 			],
 			".": [
-				...circle_points([w/20, h-w/20], w/20)
+				...circle_points([w/15, h - w/15], w/15),
 			],
 			"<": [
 				[[w, h/4], [0, h/2]],
@@ -554,12 +571,15 @@ function letter_dict(letter, h) {
 				[[w*2/9, h*8/9], [w/9, h*10.5/9], [0, h*10/9]]
 			],
 			":": [
-				...circle_points([w/20, h/4], w/20),
-				...circle_points([w/20, h * 3 / 4], w/20)
+				...circle_points([w/15, h/3], w/15),
+				// ...circle_points([w/20, h * 3 / 4], w/20)
+				// ...circle_points([w/20, h - w/20], w/20),
+				...circle_points([w/15, h - w/15], w/15),
+
 			],
 			";": [
-				...circle_points([w/10, h/4], w/20),
-				[[w*2/9, h*8/9], [w/9, h*10.5/9], [0, h*10/9]].map(x => [x[0], x[1] - h*0.2])
+				...circle_points([w/9, h/3], w/15),
+				[[w*2/9, h*8/9], [w/9, h*10.5/9], [0, h*10/9]]
 			],
 			"\'": [
 				[[0, 0], [0, h/5]]
@@ -587,13 +607,20 @@ function letter_dict(letter, h) {
 			]
 		}
 		if (letter in dict) {
-			letter_dict_cache[str] = dict[letter];
+			return dict[letter];
 		} else {
-			letter_dict_cache[str] = dict['box'];
+			return dict['box'];
 		}
-	}
-	return letter_dict_cache[str];
+	// }
+	// return letter_dict_cache[str];
 }
+
+
+function get_letter_cmd(letter, height) {
+	return letter_dict(letter).map(x => x.map(y => [y[0] * height/360, y[1] * height/360]));
+}
+
+
 
 
 function get_width_helper(letter, height) {
@@ -601,7 +628,7 @@ function get_width_helper(letter, height) {
 		return height/2;
 	}
 
-	let bez_points = letter_dict(letter, height);
+	let bez_points = get_letter_cmd(letter, height);
 
 	let xs = [];
 	for (let cmd of bez_points) {
@@ -617,12 +644,12 @@ function get_width_helper(letter, height) {
 // for (let letter of LETTERS) {
 // 	width_dict[letter] = get_width_helper(letter, 100);
 // }
-var width_dict = {"0":240,"1":144,"2":186.66666666666666,"3":224.45033348456477,"4":240,"5":213.73916654024327,"6":183.65256809151686,"7":240,"8":180,"9":183.65256809151703," ":180,"q":180.00000000000003,"w":240,"e":160,"r":160,"t":160,"y":160,"u":160,"i":24,"o":180,"p":180,"a":180,"s":151.56034273650343,"d":180.00000000000003,"f":160,"g":180,"h":160,"j":124,"k":160,"l":0,"z":120,"x":120,"c":149.53121773707232,"v":160,"b":180,"n":160,"m":240,"Q":360,"W":240,"E":240,"R":240,"T":240,"Y":240,"U":240,"I":240,"O":360,"P":224.9891860732131,"A":240,"S":227.34989822067473,"D":232.49902221001935,"F":240,"G":301.6384358269238,"H":240.00000000000003,"J":240,"K":240,"L":240,"Z":240,"X":240,"C":224.2912419235504,"V":240,"B":199.99993896393926,"N":240.00000000000003,"M":240.00000000000003,"!":24,"@":205.8854711653851,"#":240,"$":181.88160831424358,"%":240,"^":160,"&":197.53473647512007,"*":120,"(":59.9902014995162,")":59.9902014995162,"-":240,"_":240,"=":120,"+":160,"{":80,"}":80,"|":0,"[":60,"]":60.00000000000001,"\\":80,";":53.333333333333336,"'":0,":":24,"\"":48,",":53.333333333333336,".":24,"/":80,"<":240,">":240,"?":207.16850583096533};
+var width_dict = {"0":240,"1":144,"2":186.66666666666666,"3":224.45033348456477,"4":240,"5":213.73916654024327,"6":183.65256809151686,"7":240,"8":180,"9":183.65256809151703," ":180,"q":180.00000000000003,"w":240,"e":160,"r":160,"t":160,"y":160,"u":160,"i":32,"o":180,"p":180,"a":180,"s":151.56034273650343,"d":180.00000000000003,"f":160,"g":180,"h":160,"j":128,"k":160,"l":0,"z":120,"x":120,"c":149.53121773707232,"v":160,"b":180,"n":160,"m":240,"Q":360,"W":240,"E":240,"R":240,"T":240,"Y":240,"U":240,"I":240,"O":360,"P":224.9891860732131,"A":240,"S":227.34989822067473,"D":232.49902221001935,"F":240,"G":301.6384358269238,"H":240.00000000000003,"J":240,"K":240,"L":240,"Z":240,"X":240,"C":224.2912419235504,"V":240,"B":199.99993896393926,"N":240.00000000000003,"M":240.00000000000003,"!":32,"@":205.8854711653851,"#":240,"$":181.88160831424358,"%":240,"^":160,"&":197.53473647512007,"*":120,"(":59.9902014995162,")":59.9902014995162,"-":160,"_":240,"=":160,"+":160,"{":80,"}":80,"|":0,"[":60,"]":60.00000000000001,"\\":80,";":53.333333333333336,"'":0,":":32,"\"":48,",":53.333333333333336,".":32,"/":80,"<":240,">":240,"?":207.16850583096533,"`":48};
 function get_width(letter, height) {
 	if (letter in width_dict) {
 		return width_dict[letter] * height / 360;
 	}
-	return height * 2/3;
+	return height * NORMAL_LETTER_RATIO;
 }
 
 
@@ -656,9 +683,9 @@ function plot_point_path(ctx, points, offset, pert) {
 		ctx.lineTo(x, y);
 		// xs.push(x);
 	}
-	x = offset[0] + points[points.length - 1][0];
-	y = offset[1] + points[points.length - 1][1];
-	ctx.lineTo(x, y);
+	// x = offset[0] + points[points.length - 1][0];
+	// y = offset[1] + points[points.length - 1][1];
+	// ctx.lineTo(x, y);
 	// xs.push(x);
 	ctx.stroke();
 	// return [Math.min(...xs), Math.max(...xs)];
@@ -668,7 +695,7 @@ function plot_point_path(ctx, points, offset, pert) {
 
 
 function draw_letter(ctx, letter, pos, s, dots, pert) {
-	let cmd = letter_dict(letter, s);
+	let cmd = get_letter_cmd(letter, s);
 	// let ranges = [];
 	for (let stroke of cmd) {
 		// ranges.push()

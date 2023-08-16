@@ -5,12 +5,19 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
   		<link rel="icon" type="image/x-icon" href="logo.gif">
 		<!-- Bootstrap -->
-	    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 	    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-	    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+	    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"> -->
 
 	    <!-- JQuery -->
-	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script> -->
+
+
+	    <link href="res/bootstrap.css" rel="stylesheet">
+	    <script src="res/bootstrap.js"></script>
+	    <link rel="stylesheet" href="res/bootstrap-icons.css">
+	    <script src="res/jquery.js"></script>
+
 
 
 		<style>
@@ -38,67 +45,82 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-4 text-center">
-					<textarea id="textbox" rows="20">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz
+				<div class="col-md-4 text-center my-3">
+					<h4>Text</h4>
+					<textarea id="textbox" rows="6" oninput="update();">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz
 1 2 3 4 5 6 7 8 9 0
 ! @ # $ % ^ & * ( )
 [ ] { } - _ = + : ; ' " ,
 . ? / \ | < > ~ `</textarea>
-					<button class="mt-3 btn btn-primary btn-lg" onclick="update()">Render</button>
-					<br>
+					<h4>Shapes (B&eacute;zier)</h4>
+					<textarea id="shapes-input" rows="6" onchange="update()">[[300, 1200], [500, 1300], [700, 800], [300, 800], [400, 1300], [600, 1300]]</textarea>
 					<div class="input-group my-3">
-					  <span class="input-group-text">Size</span>
-					  <input id="size-input" type="number" class="form-control" placeholder="65" value="65">
-					</div>
-					<div class="input-group my-3">
-					  <span class="input-group-text">Wiggle</span>
-					  <input id="pert-input" type="number" class="form-control" placeholder="0.3" value="0.3">
-					</div>
-					<div class="input-group my-3">
-					  <span class="input-group-text">Thickness</span>
-					  <input id="thickness-input" type="number" class="form-control" placeholder="2" value="2">
-					</div>
-					<div class="input-group my-3">
-					  <span class="input-group-text">Spacing</span>
-					  <input id="spacing-input" type="number" class="form-control" placeholder="10" value="10">
-					</div>
-					<div class="input-group my-3">
-					  <span class="input-group-text">Linespace</span>
-					  <input id="linespace-input" type="number" class="form-control" placeholder="50" value="50">
-					</div>
-					<div class="input-group my-3">
-					  <span class="input-group-text">Page Width</span>
-					  <input id="width-input" type="number" class="form-control" placeholder="1000" value="1000">
-					</div>
-					<div class="input-group my-3">
-					  <span class="input-group-text">Margin</span>
-					  <input id="margin-input" type="number" class="form-control" placeholder="30" value="30">
-					</div>
-					<!-- <div class="input-group my-3">
-					  <span class="input-group-text">Justification</span>
-					  <input id="justification-input" type="text" class="form-control" placeholder="left" value="left">
-					</div> -->
-
-					<div class="btn-group" role="group">
-						<input type="radio" class="btn-check" name="just" id="just-left" autocomplete="off" value="left" checked>
-						<label class="btn btn-light btn-lg" for="just-left">
-							<i class="bi bi-text-left"></i>
-						</label>
-
-						<input type="radio" class="btn-check" name="just" id="just-center" autocomplete="off" value="center">
-						<label class="btn btn-light btn-lg" for="just-center">
-							<i class="bi bi-text-center"></i>
-						</label>
-
-						<input type="radio" class="btn-check" name="just" id="just-right" autocomplete="off" value="right">
-						<label class="btn btn-light btn-lg" for="just-right">
-							<i class="bi bi-text-right"></i>
-						</label>
+						<button class="btn btn-light input-group-btn" onclick="toggle_draw_mode()" id="draw-btn">Draw</button>
+						<textarea id="draw-textbox" class="form-control" disabled></textarea>
 					</div>
 
+					<div class="accordion my-5" id="accordionExample">
+			            <div class="accordion-item">
+			            	<h2 class="accordion-header" id="headingOne">
+			            		<button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+			                		Controls
+			                	</button>
+			            	</h2>
+			            </div>
+			            <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+               				<div class="accordion-body bg-light">
+								<div class="btn-group" role="group">
+									<input type="radio" class="btn-check" name="just" id="just-left" autocomplete="off" value="left" checked>
+									<label class="btn btn-light btn-lg" for="just-left">
+										<i class="bi bi-text-left"></i>
+									</label>
+
+									<input type="radio" class="btn-check" name="just" id="just-center" autocomplete="off" value="center">
+									<label class="btn btn-light btn-lg" for="just-center">
+										<i class="bi bi-text-center"></i>
+									</label>
+
+									<input type="radio" class="btn-check" name="just" id="just-right" autocomplete="off" value="right">
+									<label class="btn btn-light btn-lg" for="just-right">
+										<i class="bi bi-text-right"></i>
+									</label>
+								</div>
+								<div class="input-group my-3">
+								  <label class="input-group-text" for="size-input">Size</label>
+								  <input id="size-input" type="number" class="form-control" placeholder="65" value="65">
+								</div>
+								<div class="input-group my-3">
+								  <label class="input-group-text" for="pert-input">Wiggle</label>
+								  <input id="pert-input" type="number" class="form-control" placeholder="0.3" value="0.3">
+								</div>
+								<div class="input-group my-3">
+								  <label class="input-group-text" for="thickness-input">Thickness</label>
+								  <input id="thickness-input" type="number" class="form-control" placeholder="2" value="2">
+								</div>
+								<div class="input-group my-3">
+								  <label class="input-group-text" for="spacing-input">Spacing</label>
+								  <input id="spacing-input" type="number" class="form-control" placeholder="10" value="10">
+								</div>
+								<div class="input-group my-3">
+								  <label class="input-group-text" for="linespace-input">Linespace</label>
+								  <input id="linespace-input" type="number" class="form-control" placeholder="50" value="50">
+								</div>
+								<div class="input-group my-3">
+								  <label class="input-group-text" for="width-input">Page Width</label>
+								  <input id="width-input" type="number" class="form-control" placeholder="1000" value="1000">
+								</div>
+								<div class="input-group my-3">
+								  <label class="input-group-text" for="margin-input">Margin</label>
+								  <input id="margin-input" type="number" class="form-control" placeholder="30" value="30">
+								</div>
+
+								<button class="mt-3 btn btn-primary" onclick="update()">Render</button>
+							</div>
+						</div>
+					</div>
 				</div>
 
-				<div class="col-md-8 text-center">
+				<div class="col-md-8 text-center px-0 py-3">
 					<canvas id="canvas" width="1000" height="1000">
 						Your Browser doesn't support canvas... sowwyyy..
 					</canvas>
@@ -114,8 +136,11 @@
 	<script>
 
 		let canvas = document.getElementById('canvas');
+		let ctx = canvas.getContext('2d');
 
 		var thickness, pert, spacing, linespace, size, justification, page_width, margin;
+
+		var draw_mode = false;
 
 		var dots = false;
 
@@ -135,7 +160,7 @@
 			canvas.width = page_width;
 
 
-			let text = document.getElementById('textbox').value;
+			let text = document.getElementById('textbox').value.replaceAll("\t", "    ");
 			let print_lines = [];
 			for (let par of text.split("\n")) {
 				let line = [];
@@ -154,12 +179,24 @@
 				print_lines.push(JSON.parse(JSON.stringify(line)));
 			}
 
-			canvas.height = Math.max(print_lines.length, 1) * (size + linespace) + margin * 2;
+
+			let shape_text = document.getElementById('shapes-input').value.trim();
+			let max_y = 0;
+			let shapes = [];
+			if (shape_text != "") {
+				shapes = shape_text.split("\n").map(x => JSON.parse(x));
+				max_y = Math.max(...shapes.map(x => Math.max(...x.map(y => y[1]))));
+			}
+
+
+			canvas.height = Math.max(
+				Math.max(print_lines.length, 1) * (size + linespace) + margin * 2,
+				max_y + margin * 2);
 			ctx = canvas.getContext('2d');
 			ctx.lineWidth = thickness;
 
-			ctx.fillStyle = "white";
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			// ctx.fillStyle = "white";
+			// ctx.fillRect(0, 0, canvas.width, canvas.height);
 
 
 			let v = margin;
@@ -167,6 +204,26 @@
 				draw_textline(ctx, line.join(" "), [0, v], size, spacing, dots, pert, justification, margin);
 				v += linespace + size;
 			}
+
+			for (let cmd of shapes) {
+				plot_point_path(ctx, get_points(bezier(cmd)), [0, 0], pert);
+			}
+
+
+			if (draw_mode) {
+				document.getElementById('draw-textbox').value = JSON.stringify(drawing_cmd);
+
+				plot_point_path(ctx, get_points(bezier(drawing_cmd), 10), [0, 0], 0.3);
+			
+				for (let point of drawing_cmd) {
+					ctx.beginPath();
+					ctx.arc(point[0], point[1], 2, 0, 2 * Math.PI);
+					ctx.fill();
+				}
+
+			}
+			
+
 		}
 
 		update();
@@ -194,6 +251,78 @@
 		    link.href = canvas.toDataURL();
 		    link.click();
 		}
+
+
+
+
+		function toggle_draw_mode() {
+			draw_mode = !draw_mode;
+			let btn = document.getElementById('draw-btn');
+			if (draw_mode) {
+				btn.innerHTML = "Set";
+			} else {
+				btn.innerHTML = "Draw";
+				document.getElementById('draw-textbox').value = "";
+				document.getElementById('shapes-input').value += '\n' + JSON.stringify(drawing_cmd);
+				drawing_cmd = [];
+				update();
+			}
+		}
+
+
+
+
+		var drawing_cmd = [];
+		var holding =  false;
+
+	    function event_int(e) {
+	    	let rect = canvas.getBoundingClientRect();
+	    	return [
+	    		(e.clientX - rect.left) * (canvas.width / canvas.clientWidth),
+		    	(e.clientY - rect.top) * (canvas.height / canvas.clientHeight)
+		    ];
+		}
+
+		canvas.addEventListener('mousedown', function(e) {
+			if (draw_mode) {
+				e.preventDefault();
+				holding = true;
+				drawing_cmd.push(event_int(e));
+				update();
+			}
+		});
+
+
+		canvas.addEventListener('mousemove', function(e) {
+			if (draw_mode) {
+				e.preventDefault();
+				if (holding) {
+					drawing_cmd.pop();
+					drawing_cmd.push(event_int(e));
+					update();
+				}
+			}
+		});
+
+		canvas.addEventListener('mouseup', function(e) {
+			if (draw_mode) {
+				e.preventDefault();
+				holding = false;
+				update();
+			}
+		});
+
+
+		canvas.addEventListener('mouseout', function(e) {
+			if (draw_mode) {
+				e.preventDefault();
+				if (holding) {
+					drawing_cmd.pop();
+					update();
+					holding = false;
+				}
+			}
+		});
 
 
 
