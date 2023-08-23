@@ -66,36 +66,36 @@
 					<div id="controls" class="collapse card">
 					  	<div class="card-body">
 					    	<div class="btn-group" role="group">
-								<input type="radio" class="btn-check" name="just" id="just-left" autocomplete="off" value="left" checked>
+								<input oninput="update();" type="radio" class="btn-check" name="just" id="just-left" autocomplete="off" value="left" checked>
 								<label class="btn btn-light btn-lg" for="just-left">
 									<i class="bi bi-text-left"></i>
 								</label>
 
-								<input type="radio" class="btn-check" name="just" id="just-center" autocomplete="off" value="center">
+								<input oninput="update();" type="radio" class="btn-check" name="just" id="just-center" autocomplete="off" value="center">
 								<label class="btn btn-light btn-lg" for="just-center">
 									<i class="bi bi-text-center"></i>
 								</label>
 
-								<input type="radio" class="btn-check" name="just" id="just-right" autocomplete="off" value="right">
+								<input oninput="update();"  type="radio" class="btn-check" name="just" id="just-right" autocomplete="off" value="right">
 								<label class="btn btn-light btn-lg" for="just-right">
 									<i class="bi bi-text-right"></i>
 								</label>
 							</div>
 							<div class="input-group my-3">
 							  <label class="input-group-text" for="size-input">Size</label>
-							  <input id="size-input" type="number" class="form-control" placeholder="65" value="65">
+							  <input onchange="update();" id="size-input" type="number" class="form-control" placeholder="65" value="65">
 							</div>
 							<div class="input-group my-3">
 							  <label class="input-group-text" for="pert-input">Wiggle</label>
-							  <input id="pert-input" type="number" class="form-control" placeholder="0.3" value="0.3">
+							  <input oninput="update();" id="pert-input" type="number" class="form-control" placeholder="0.3" value="0.3" min="0" step="0.1">
 							</div>
 							<div class="input-group my-3">
 							  <label class="input-group-text" for="thickness-input">Thickness</label>
-							  <input id="thickness-input" type="number" class="form-control" placeholder="2" value="2">
+							  <input oninput="update();" id="thickness-input" type="number" class="form-control" placeholder="2" value="2">
 							</div>
 							<div class="input-group my-3">
 							  <label class="input-group-text" for="spacing-input">Spacing</label>
-							  <input id="spacing-input" type="number" class="form-control" placeholder="10" value="10">
+							  <input oninput="update();" id="spacing-input" type="number" class="form-control" placeholder="10" value="10">
 							</div>
 							<div class="input-group my-3">
 							  <label class="input-group-text" for="linespace-input">Linespace</label>
@@ -103,14 +103,13 @@
 							</div>
 							<div class="input-group my-3">
 							  <label class="input-group-text" for="width-input">Page Width</label>
-							  <input id="width-input" type="number" class="form-control" placeholder="1000" value="1000">
+							  <input oninput="update();" id="width-input" type="number" class="form-control" placeholder="1000" value="1000">
 							</div>
 							<div class="input-group my-3">
 							  <label class="input-group-text" for="margin-input">Margin</label>
-							  <input id="margin-input" type="number" class="form-control" placeholder="30" value="30">
+							  <input oninput="update();" id="margin-input" type="number" class="form-control" placeholder="30" value="30">
 							</div>
-
-							<button class="mt-3 btn btn-primary" onclick="update()">Render</button>
+							<!-- <button class="mt-3 btn btn-primary" onclick="update()">Render</button> -->
 						</div>
 					</div>
 				</div>
@@ -189,8 +188,10 @@
 			ctx = canvas.getContext('2d');
 			ctx.lineWidth = thickness;
 
-			// ctx.fillStyle = "white";
-			// ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.fillStyle = "white";
+			ctx.fillRect(0, 0, canvas.width, canvas.height);
+			ctx.fillStyle = "black";
+
 
 
 			let v = margin;
@@ -281,7 +282,7 @@
 			if (draw_mode) {
 				e.preventDefault();
 				holding = true;
-				drawing_cmd.push(event_int(e));
+				drawing_cmd.push(event_int(e).map(x => Math.round(x)));
 				update();
 			}
 		});
@@ -292,7 +293,7 @@
 				e.preventDefault();
 				if (holding) {
 					drawing_cmd.pop();
-					drawing_cmd.push(event_int(e));
+					drawing_cmd.push(event_int(e).map(x => Math.round(x)));
 					update();
 				}
 			}
